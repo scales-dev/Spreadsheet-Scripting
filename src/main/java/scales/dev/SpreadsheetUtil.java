@@ -22,7 +22,7 @@ public class SpreadsheetUtil {
     XLSX {
       @Override
       public ArrayList<Map<String, String>> read(Path file, boolean header) {
-        return null;
+        return XlsxUtil.readXlsx(file, header);
       }
     },
     XLS {
