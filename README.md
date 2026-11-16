@@ -46,3 +46,5 @@ void spreadsheetToCsv(Path input) {
   SpreadsheetUtil.write(input.getParent().resolve("output.csv"), spreadsheet); 
 }
 ```
+
+Or an entire example project: [Compress-Buying-List](https://github.com/scales-dev/Compress-Buying-List)
