@@ -11,7 +11,10 @@ repositories {
 }
 
 dependencies {
-    // writing to a csv isnt particularly difficult, but every little helps
+    // reading/writing to a csv isnt particularly difficult, but every little helps
     // Source: https://mvnrepository.com/artifact/org.apache.commons/commons-csv
     implementation 'org.apache.commons:commons-csv:1.14.1'
+
+    // Source: https://mvnrepository.com/artifact/org.apache.poi/poi
+    implementation 'org.apache.poi:poi:6.0.0'
 }
