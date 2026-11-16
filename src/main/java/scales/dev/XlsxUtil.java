@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
+// ai slop code, i'll rewrite myself whenever i have time ig
+// for later: https://www.baeldung.com/java-microsoft-excel
 public class XlsxUtil {
   public static ArrayList<Map<String, String>> readXlsx(Path file, boolean header) {
     try (Workbook workbook = WorkbookFactory.create(file.toFile())) {

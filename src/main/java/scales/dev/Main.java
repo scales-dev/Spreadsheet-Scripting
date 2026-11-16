@@ -9,6 +9,6 @@ public class Main {
     Path CSV_PATH = Path.of(args[0]);
     ArrayList<Map<String, String>> csv = SpreadsheetUtil.read(CSV_PATH, true);
 
-    CsvUtil.writeCsv(CSV_PATH.getParent().resolve("OUTPUT.csv"), csv);
+    SpreadsheetUtil.write(CSV_PATH.getParent().resolve("OUTPUT.csv"), csv);
   }
 }
