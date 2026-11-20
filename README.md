@@ -22,7 +22,8 @@ to read spreadsheets and return them in the format:
 
 ### Usage
 Thanks to [JitPak](https://jitpack.io/#scales-dev/Spreadsheet-Scripting)!
-Replace TAG with a commit version or -SNAPSHOT to be on the bleeding edge
+Replace TAG with a commit tag found [here](https://jitpack.io/#scales-dev/Spreadsheet-Scripting) 
+or -SNAPSHOT to be on the bleeding edge
 
 #### Gradle
 ```groovy
