@@ -10,29 +10,29 @@ public class SpreadsheetUtil {
   public enum SpreadsheetType {
     CSV {
       @Override
-      public ArrayList<Map<String, String>> read(Path file, boolean header) {
+      public Workbook read(Path file, boolean header) {
         return CsvUtil.readCsv(file, header);
       }
 
       @Override
-      public void write(Path file, ArrayList<Map<String, String>> csv) {
+      public void write(Path file, Workbook csv) {
         CsvUtil.writeCsv(file, csv);
       }
     },
     XLSX {
       @Override
-      public ArrayList<Map<String, String>> read(Path file, boolean header) {
+      public Workbook read(Path file, boolean header) {
         return XlsxUtil.readXlsx(file, header);
       }
     },
     XLS {
-      @Override public ArrayList<Map<String, String>> read(Path file, boolean header) {
+      @Override public Workbook read(Path file, boolean header) {
         return XlsxUtil.readXlsx(file, header);
       }
     };
 
-    public abstract ArrayList<Map<String, String>> read(Path file, boolean header);
-    public void write(Path file, ArrayList<Map<String, String>> csv) {
+    public abstract Workbook read(Path file, boolean header);
+    public void write(Path file, Workbook csv) {
       throw new RuntimeException("Writing this type is not yet implemented!");
     }
 
@@ -50,12 +50,12 @@ public class SpreadsheetUtil {
   }
 
   // todo: reading whole workbooks, not just single worksheets
-  public static ArrayList<Map<String, String>> read(Path file, boolean header) {
+  public static Workbook read(Path file, boolean header) {
     return SpreadsheetType.getType(file).read(file, header);
   }
 
   // todo: writing whole workbooks, not just single worksheets
-  public static void write(Path file, ArrayList<Map<String, String>> csv) {
-    SpreadsheetType.getType(file).write(file, csv);
+  public static void write(Path file, Workbook workbook) {
+    SpreadsheetType.getType(file).write(file, workbook);
   }
 }
