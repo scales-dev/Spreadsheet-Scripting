@@ -7,6 +7,6 @@ public class Main {
     Path INPUT = Path.of(args[0]);
     Workbook workbook = SpreadsheetUtil.read(INPUT, true);
 
-    SpreadsheetUtil.write(INPUT.getParent().resolve("OUTPUT.csv"), workbook);
+    SpreadsheetUtil.write(INPUT.getParent().resolve("OUTPUT.xlsx"), workbook);
   }
 }

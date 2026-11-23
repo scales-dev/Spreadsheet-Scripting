@@ -9,30 +9,33 @@ import java.util.stream.Collectors;
 public class SpreadsheetUtil {
   public enum SpreadsheetType {
     CSV {
-      @Override
-      public Workbook read(Path file, boolean header) {
+      @Override public Workbook read(Path file, boolean header) {
         return CsvUtil.readCsv(file, header);
       }
 
-      @Override
-      public void write(Path file, Workbook csv) {
-        CsvUtil.writeCsv(file, csv);
+      @Override public void write(Path file, Workbook workbook) {
+        CsvUtil.writeCsv(file, workbook);
       }
     },
     XLSX {
-      @Override
-      public Workbook read(Path file, boolean header) {
+      @Override public Workbook read(Path file, boolean header) {
         return XlsxUtil.readXlsx(file, header);
+      }
+      @Override public void write(Path file, Workbook workbook) {
+        XlsxUtil.writeXlsx(file, workbook);
       }
     },
     XLS {
       @Override public Workbook read(Path file, boolean header) {
-        return XlsxUtil.readXlsx(file, header);
+        return XLSX.read(file, header);
+      }
+      @Override public void write(Path file, Workbook workbook) {
+        XLSX.write(file, workbook);
       }
     };
 
     public abstract Workbook read(Path file, boolean header);
-    public void write(Path file, Workbook csv) {
+    public void write(Path file, Workbook workbook) {
       throw new RuntimeException("Writing this type is not yet implemented!");
     }
 

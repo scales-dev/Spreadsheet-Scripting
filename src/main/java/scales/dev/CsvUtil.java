@@ -23,7 +23,6 @@ public class CsvUtil {
       System.out.println("Created new path: " + outputParent);
     }
 
-
     for (Map.Entry<String, Worksheet> worksheet : worksheets) {
       LinkedHashSet<String> headers = new LinkedHashSet<>();
 

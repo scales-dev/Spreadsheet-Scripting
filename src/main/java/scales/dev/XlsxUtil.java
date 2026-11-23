@@ -4,8 +4,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -69,6 +68,47 @@ public class XlsxUtil {
       }
 
       return new scales.dev.Workbook(worksheets);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  // todo: working out data types when writing
+  public static void writeXlsx(Path file, scales.dev.Workbook workbook) {
+    try{
+      Workbook workbookWriter = new XSSFWorkbook();
+      FileOutputStream outputStream = new FileOutputStream(file.toFile());
+
+      Set<Map.Entry<String, Worksheet>> worksheets = workbook.worksheets.entrySet();
+      for (Map.Entry<String, Worksheet> worksheet : worksheets) {
+        int rows = 0;
+        LinkedHashSet<String> headers = new LinkedHashSet<>();
+
+        Sheet sheetWriter = workbookWriter.createSheet(worksheet.getKey());
+        Worksheet sheet = worksheet.getValue();
+
+        sheet.rows.forEach(product -> headers.addAll(product.keySet()));
+
+        Row headerRow = sheetWriter.createRow(rows++);
+        int headerCellIndex = 0;
+        for (String header : headers) {
+          Cell cell = headerRow.createCell(headerCellIndex++);
+          cell.setCellValue(header);
+        }
+
+        for (Map<String, String> inputRow : sheet.rows) {
+          Row outputRow = sheetWriter.createRow(rows++);
+
+          int cellIndex = 0;
+          for (String cellValue : inputRow.values()) {
+            Cell cell = outputRow.createCell(cellIndex++);
+            cell.setCellValue(cellValue);
+          }
+        }
+      }
+
+      workbookWriter.write(outputStream);
+      workbookWriter.close();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
