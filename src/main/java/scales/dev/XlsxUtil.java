@@ -119,31 +119,33 @@ public class XlsxUtil {
     }
   }
 
+  // todo: .'s and ,'s are swapped in some locales, i remember pokemon made that mistake once.
   private enum CellType {
     MONEY {
       // matches any unusual character followed by any amount of numbers, an optional decimal then
       // optional more numbers
-      private static final Pattern MONEY_REGEX = Pattern.compile("[^\\s0-9a-zA-Z\\-.](\\d+(?:\\.\\d*)?)");
+      private static final Pattern MONEY_REGEX =
+          Pattern.compile("[^\\s0-9a-zA-Z\\-.]([\\d,]*\\.?[\\d,]*)");
 
       @Override
       public boolean setCell(String s, Cell cell) {
         Matcher matcher = MONEY_REGEX.matcher(s);
         if (!matcher.matches()) return false;
 
-        cell.setCellValue(Double.parseDouble(matcher.group(1)));
+        cell.setCellValue(Double.parseDouble(CellType.fixNumber(matcher.group(1))));
         return true;
       }
     },
     NUMBER {
       // ignores numbers starting with 0 if they dont have a decimal after
       private static final Pattern NUMBER_REGEX =
-          Pattern.compile("-?(([1-9]\\d*(\\.\\d++)?)|(0\\.\\d++))");
+          Pattern.compile("-?(([1-9][\\d,]*(\\.[\\d,]*)?)|(0\\.[\\d,]++))");
 
       @Override public boolean setCell(String s, Cell cell) {
         Matcher matcher = NUMBER_REGEX.matcher(s);
         if (!matcher.matches()) return false;
 
-        cell.setCellValue(Double.parseDouble(matcher.group(1)));
+        cell.setCellValue(Double.parseDouble(CellType.fixNumber(matcher.group(1))));
         return true;
       }
     },
@@ -185,11 +187,18 @@ public class XlsxUtil {
     };
 
     public abstract boolean setCell(String s, Cell cell);
+
+    private static String fixNumber(String match) {
+      return match.replace(",", "");
+    }
   }
 
   public static void setCellValue(String s, Cell cell) {
     for (CellType cellType : CellType.values()) {
-      if (cellType.setCell(s, cell)) return;
+      if (cellType.setCell(s, cell)) {
+        System.out.println(s + " : " + cellType.name());
+        return;
+      }
     }
   }
 }
