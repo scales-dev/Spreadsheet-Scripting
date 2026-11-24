@@ -27,17 +27,12 @@ or -SNAPSHOT to be on the bleeding edge
 
 #### Gradle
 ```groovy
+repositories {
+    maven { url 'https://jitpack.io' }
+}
 dependencies {
     implementation 'com.github.scales-dev:Spreadsheet-Scripting:Tag'
 }
-```
-#### Maven
-```xml
-<dependency>
-    <groupId>com.github.scales-dev</groupId>
-    <artifactId>Spreadsheet-Scripting</artifactId>
-    <version>Tag</version>
-</dependency>
 ```
 
 ### Example
@@ -48,4 +43,5 @@ void spreadsheetToCsv(Path input) {
 }
 ```
 
-Or an entire example project: [Compress-Buying-List](https://github.com/scales-dev/Compress-Buying-List)
+Or an entire example project: [Compress-Buying-List](https://github.com/My-Exotic-Fruit-Work/Compress-Buying-List),
+or a worse example of a newer version: [Sales-Stats](https://github.com/My-Exotic-Fruit-Work/Sales-Stats)
