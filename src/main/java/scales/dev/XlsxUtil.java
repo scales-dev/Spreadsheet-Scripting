@@ -2,11 +2,16 @@ package scales.dev;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // https://www.baeldung.com/java-microsoft-excel
 public class XlsxUtil {
@@ -102,7 +107,7 @@ public class XlsxUtil {
           int cellIndex = 0;
           for (String cellValue : inputRow.values()) {
             Cell cell = outputRow.createCell(cellIndex++);
-            cell.setCellValue(cellValue);
+            setCellValue(cellValue, cell);
           }
         }
       }
@@ -111,6 +116,80 @@ public class XlsxUtil {
       workbookWriter.close();
     } catch (IOException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  private enum CellType {
+    MONEY {
+      // matches any unusual character followed by any amount of numbers, an optional decimal then
+      // optional more numbers
+      private static final Pattern MONEY_REGEX = Pattern.compile("[^\\s0-9a-zA-Z\\-.](\\d+(?:\\.\\d*)?)");
+
+      @Override
+      public boolean setCell(String s, Cell cell) {
+        Matcher matcher = MONEY_REGEX.matcher(s);
+        if (!matcher.matches()) return false;
+
+        cell.setCellValue(Double.parseDouble(matcher.group(1)));
+        return true;
+      }
+    },
+    NUMBER {
+      // ignores numbers starting with 0 if they dont have a decimal after
+      private static final Pattern NUMBER_REGEX =
+          Pattern.compile("-?(([1-9]\\d*(\\.\\d++)?)|(0\\.\\d++))");
+
+      @Override public boolean setCell(String s, Cell cell) {
+        Matcher matcher = NUMBER_REGEX.matcher(s);
+        if (!matcher.matches()) return false;
+
+        cell.setCellValue(Double.parseDouble(matcher.group(1)));
+        return true;
+      }
+    },
+    BOOLEAN {
+      private static final Pattern BOOLEAN_REGEX = Pattern.compile("(?i)(true|false)");
+
+      @Override public boolean setCell(String s, Cell cell) {
+        Matcher matcher = BOOLEAN_REGEX.matcher(s);
+        if (!matcher.matches()) return false;
+
+        cell.setCellValue(Boolean.parseBoolean(matcher.group(1)));
+        return true;
+      }
+    },
+    FORMULA {
+      @Override public boolean setCell(String s, Cell cell) {
+        if (!s.startsWith("=")) return false;
+
+        cell.setCellFormula(s.substring(1));
+        return true;
+      }
+    },
+    DATE {
+      @Override public boolean setCell(String s, Cell cell) {
+        try{
+          Date.from(Instant.parse(s));
+          return true;
+        } catch (DateTimeParseException e) {
+          return false;
+        }
+      }
+    },
+    STRING {
+      /// assumes all other checks failed, is a fallback
+      @Override public boolean setCell(String s, Cell cell) {
+        cell.setCellValue(s);
+        return true;
+      }
+    };
+
+    public abstract boolean setCell(String s, Cell cell);
+  }
+
+  public static void setCellValue(String s, Cell cell) {
+    for (CellType cellType : CellType.values()) {
+      if (cellType.setCell(s, cell)) return;
     }
   }
 }
