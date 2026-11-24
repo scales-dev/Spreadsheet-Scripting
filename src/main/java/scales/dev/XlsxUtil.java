@@ -195,10 +195,7 @@ public class XlsxUtil {
 
   public static void setCellValue(String s, Cell cell) {
     for (CellType cellType : CellType.values()) {
-      if (cellType.setCell(s, cell)) {
-        System.out.println(s + " : " + cellType.name());
-        return;
-      }
+      if (cellType.setCell(s, cell)) return;
     }
   }
 }
